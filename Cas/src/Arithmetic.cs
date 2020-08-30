@@ -26,7 +26,16 @@ public class Addition : BaseExpression {
         // If both are constants
         if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
             return new Constant(constLhs.Value + constRhs.Value);
-        } else {
+        } 
+        // If one of them is zero, omit it
+        if (newLHS is Constant zeroLhs && zeroLhs.Value == 0) {
+            return newRHS;
+        }
+        else if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
+            return newLHS;
+        }
+        // No simplification
+        else {
             return new Addition(newLHS, newRHS);
         }
     }
@@ -70,7 +79,13 @@ public class Subtraction: BaseExpression {
         // If both are constants
         if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
             return new Constant(constLhs.Value - constRhs.Value);
-        } else {
+        } 
+        // If rhs is zero, omit it
+        if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
+            return newLHS;
+        }
+        // No simplification
+        else {
             return new Subtraction(newLHS, newRHS);
         }
     }
@@ -114,7 +129,16 @@ public class Multiplication : BaseExpression {
         // If both are constants
         if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
             return new Constant(constLhs.Value * constRhs.Value);
-        } else {
+        } 
+        // If one of them are zero the product is zero
+        if (newLHS is Constant zeroLhs && zeroLhs.Value == 0) {
+            return Constant.Zero;
+        }
+        else if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
+            return Constant.Zero;
+        }
+        // No simplification
+        else {
             return new Multiplication(newLHS, newRHS);
         }
     }
@@ -131,7 +155,7 @@ public class Multiplication : BaseExpression {
     }
 
     public override string ToString() {
-        return $"({Lhs} × {Rhs})";
+        return $"({Lhs} · {Rhs})";
     }
 }
 
@@ -216,7 +240,9 @@ public class Exponentiation : BaseExpression {
         // If both are constants
         if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
             return new Constant(Math.Pow(constLhs.Value, constRhs.Value));
-        } else {
+        } 
+        // No simplification
+        else {
             return new Exponentiation(newLHS, newRHS);
         }
     }
@@ -259,7 +285,9 @@ public class Logarithm : BaseExpression  {
         // If both are constants
         if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
             return new Constant(Math.Log(constRhs.Value, constLhs.Value));
-        } else {
+        } 
+        // No simplification
+        else {
             return new Logarithm(newLHS, newRHS);
         }
     }

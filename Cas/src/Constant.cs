@@ -1,8 +1,9 @@
 namespace Qkmaxware.Cas {
 
 public class Constant : BaseExpression {
-    public static readonly Constant Zero = new Constant(1);
+    public static readonly Constant Zero = new Constant(0);
     public static readonly Constant One = new Constant(1);
+    public static readonly Constant E = new Constant(System.Math.E);
 
     public double Value {get; private set;}
     public Constant(double value) {
@@ -30,6 +31,10 @@ public class Constant : BaseExpression {
 
     public override int GetHashCode() {
         return Value.GetHashCode();
+    }
+
+    public override string ToString() {
+        return Value.ToString();
     }
 }
 

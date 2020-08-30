@@ -38,6 +38,15 @@ var expression = y <= x^2 + 6;
 var expression_for_x = expression.SolveFor(x);
 ```
 
+## Differentiation
+```cs
+Symbol y = new Symbol("y");
+Symbol x = new Symbol("x");
+
+var expr = y <= (x^2);
+var ddx = expr.Differentiate(x).Simplify();
+```
+
 ## Made With
 - [.Net Standard](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
   

@@ -5,7 +5,7 @@ namespace Qkmaxware.Cas {
 
 public class Symbol : BaseExpression {
     
-    public string Identifier {get; private set;}
+    public string Identifier {get; protected set;}
 
     public Symbol() : this(Guid.NewGuid().ToString()) {}
 
