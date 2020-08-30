@@ -2,7 +2,7 @@
   <img width="120" height="120" src="logo.svg">
 </p>
 
-# C# Numerics
+# C# CAS
 Simple computer algebra system in C# using a DSL (domain specific language) to construct mathematical expression trees which can be manipulated, transformed, and evaluated.
 
 # Build Status
@@ -17,7 +17,7 @@ The library is available as a NuGet package for any .Net implementation that sup
 var x = Symbol("x");
 var y = Symbol("y");
 
-var expression = y <= x^2 + 6; 
+var expression = y <= (x^2) + 6; 
 ```
 
 ## Evaluating expressions
@@ -25,7 +25,7 @@ var expression = y <= x^2 + 6;
 var x = Symbol("x");
 var y = Symbol("y");
 
-var expression = y <= x^2 + 6; 
+var expression = y <= (x^2) + 6; 
 var y6 = expression.Where(x == 6).Value;
 ```
 
@@ -34,7 +34,7 @@ var y6 = expression.Where(x == 6).Value;
 var x = Symbol("x");
 var y = Symbol("y");
 
-var expression = y <= x^2 + 6; 
+var expression = y <= (x^2) + 6; 
 var expression_for_x = expression.SolveFor(x);
 ```
 
