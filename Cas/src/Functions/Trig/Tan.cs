@@ -3,22 +3,26 @@ using Qkmaxware.Cas.Calculus;
 
 namespace Qkmaxware.Cas.Functions {
 
-public class Cos : Function, IInvertable, IDifferentiable {
-    public Cos(BaseExpression arg) : base(arg) {}
+public class Tan : Function, IInvertable, IDifferentiable {
+    public Tan(BaseExpression arg) : base(arg) {}
 
     public Function GetInverseWithArg(BaseExpression arg) {
-        return new Acos(arg);
+        return new Atan(arg);
     }
 
     public BaseExpression GetDerivativeExpressionWithArg(BaseExpression arg) {
-        return new Multiplication(
-            new Real(-1),
-            new Sin(arg)
+        // sec^2(x) == 1 + tan^2(x)
+        return new Addition(
+            Real.One,
+            new Multiplication(
+                new Tan(arg),
+                new Tan(arg)
+            )
         );
     }
 
     public override BaseExpression When(params Substitution[] substitutions) {
-        return new Cos(this.Argument.When(substitutions));
+        return new Tan(this.Argument.When(substitutions));
     }
 
     public override BaseExpression Simplify() {
@@ -26,9 +30,9 @@ public class Cos : Function, IInvertable, IDifferentiable {
         // Simplifications
         // If the argument is a real number
         if (newArg is Real realArg) {
-            return new Real(Math.Cos(realArg.Value));
+            return new Real(Math.Tan(realArg.Value));
         } else {
-            return new Cos(newArg);
+            return new Tan(newArg);
         }
     } 
     

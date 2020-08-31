@@ -3,11 +3,22 @@ using Qkmaxware.Cas.Calculus;
 
 namespace Qkmaxware.Cas.Functions {
 
-public class Asin : Function, IInvertable {
+public class Asin : Function, IInvertable, IDifferentiable {
     public Asin(BaseExpression arg) : base(arg) {}
 
     public Function GetInverseWithArg(BaseExpression arg) {
         return new Sin(arg);
+    }
+
+    public BaseExpression GetDerivativeExpressionWithArg(BaseExpression arg) {
+        // 1 / sqrt(1 - x^2)
+        return new Division(
+            Real.One,
+            new Exponentiation(
+                new Subtraction(Real.One, new Multiplication(arg, arg)),
+                Real.Sqrt
+            )
+        );
     }
 
     public override BaseExpression When(params Substitution[] substitutions) {

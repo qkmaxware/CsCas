@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Qkmaxware.Cas;
-using Qkmaxware.Cas;
 
 namespace Cas.Test {
 

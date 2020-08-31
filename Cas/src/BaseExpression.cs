@@ -40,6 +40,10 @@ public abstract class BaseExpression : IAlgebraicEntity {
         return new Addition(a, new Real(b));
     }
 
+    public static Multiplication operator - (BaseExpression a) {
+        return new Multiplication(Real.NegativeOne, a); // Unitary negation
+    }
+
     public static Subtraction operator - (BaseExpression a, BaseExpression b) {
         return new Subtraction(a, b);
     }
@@ -74,10 +78,6 @@ public abstract class BaseExpression : IAlgebraicEntity {
 
     public static Division operator / (BaseExpression a, double b) {
         return new Division(a, new Real(b));
-    }
-
-    public static Subtraction operator - (BaseExpression a) {
-        return new Subtraction(Real.Zero, a);
     }
 
     public static Assignment operator <= (BaseExpression a, BaseExpression b) {
