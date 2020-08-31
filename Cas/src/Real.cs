@@ -1,12 +1,12 @@
 namespace Qkmaxware.Cas {
 
-public class Constant : BaseExpression {
-    public static readonly Constant Zero = new Constant(0);
-    public static readonly Constant One = new Constant(1);
-    public static readonly Constant E = new Constant(System.Math.E);
+public class Real : BaseExpression {
+    public static readonly Real Zero = new Real(0);
+    public static readonly Real One = new Real(1);
+    public static readonly Real E = new Real(System.Math.E);
 
     public double Value {get; private set;}
-    public Constant(double value) {
+    public Real(double value) {
         this.Value = value;
     }
 
@@ -18,13 +18,13 @@ public class Constant : BaseExpression {
         return this;
     }
 
-    public static implicit operator Constant (double value) {
-        return new Constant(value);
+    public static implicit operator Real (double value) {
+        return new Real(value);
     }
 
     public override bool Equals(object obj) {
         return obj switch {
-            Constant expr => expr.Value.Equals(this.Value),
+            Real expr => expr.Value.Equals(this.Value),
             _ => base.Equals(obj)
         };
     }

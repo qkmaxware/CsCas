@@ -13,7 +13,7 @@ public abstract class Substitution {
 public class SymbolicSubstitution : Substitution {
     public Symbol Symbol {get; private set;}
 
-    public SymbolicSubstitution(Symbol symbol, Constant @for) : base(@for) {
+    public SymbolicSubstitution(Symbol symbol, Real @for) : base(@for) {
         this.Symbol = symbol;
     }
 

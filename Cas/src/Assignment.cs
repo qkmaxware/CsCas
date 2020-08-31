@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace Qkmaxware.Cas {
 
@@ -17,6 +18,13 @@ public class Assignment {
 
     public Assignment Simplify() {
         return new Assignment(this.Lhs.Simplify(), this.Rhs.Simplify());
+    }
+
+    private Function GetInverse(Function fn, BaseExpression arg) {
+        if (!(fn is IInvertable)) {
+            throw new System.ArgumentException($"No known inverse for function '{fn.GetType().Name}'");
+        }
+        return ((IInvertable)fn).GetInverseWithArg(arg);
     }
 
     public Assignment? SolveFor(Symbol symbol) {
@@ -83,7 +91,7 @@ public class Assignment {
                     bop.lhs = bop.rhs √ this.rhs  =>  this.rhs ^ (1/bop.rhs)
                     bop.rhs = log_{bop.lhs}(this.rhs)
                 */
-                var try1 = new Assignment(bop.Root, new Exponentiation(this.Rhs, new Division(Constant.One, bop.Power)));
+                var try1 = new Assignment(bop.Root, new Exponentiation(this.Rhs, new Division(Real.One, bop.Power)));
                 var try2 = new Assignment(bop.Power, new Logarithm(bop.Root, this.Rhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
                 break;
@@ -94,9 +102,19 @@ public class Assignment {
                     bop.base = this.rhs √ bop.arg  => bop.arg ^ (1/this.rhs)
                     bop.arg = bop.base ^ this.rhs
                 */
-                var try1 = new Assignment(log.Base, new Exponentiation(log.Argument, new Division(Constant.One, this.Rhs)));
+                var try1 = new Assignment(log.Base, new Exponentiation(log.Argument, new Division(Real.One, this.Rhs)));
                 var try2 = new Assignment(log.Argument, new Exponentiation(log.Base, this.Rhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
+                break;
+            }
+            case Function fn : {
+                /*
+                  fn(arg) = this.rhs => arg = fn^-1(this.rhs)
+                */
+                var inverse = GetInverse(fn, this.Rhs);
+            
+                var try1 = new Assignment(fn.Argument, inverse);
+                solved = solved ?? try1.SolveFor(symbol);
                 break;
             }
             default: {
@@ -156,7 +174,7 @@ public class Assignment {
                     bop.lhs = bop.rhs √ this.lhs  =>  this.lhs ^ (1/bop.rhs)
                     bop.rhs = log_{bop.lhs}(this.lhs)
                 */
-                var try1 = new Assignment(bop.Root, new Exponentiation(this.Lhs, new Division(Constant.One, bop.Power)));
+                var try1 = new Assignment(bop.Root, new Exponentiation(this.Lhs, new Division(Real.One, bop.Power)));
                 var try2 = new Assignment(bop.Power, new Logarithm(bop.Root, this.Lhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
                 break;
@@ -167,9 +185,19 @@ public class Assignment {
                     bop.base = this.lhs √ bop.arg  => bop.arg ^ (1/this.lhs)
                     bop.arg = bop.base ^ this.lhs
                 */
-                var try1 = new Assignment(log.Base, new Exponentiation(log.Argument, new Division(Constant.One, this.Lhs)));
+                var try1 = new Assignment(log.Base, new Exponentiation(log.Argument, new Division(Real.One, this.Lhs)));
                 var try2 = new Assignment(log.Argument, new Exponentiation(log.Base, this.Lhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
+                break;
+            }
+            case Function fn : {
+                /*
+                  this.lhs = fn(arg) => fn^-1(this.lhs) = arg
+                */
+                var inverse = GetInverse(fn, this.Lhs);
+            
+                var try1 = new Assignment(inverse, fn.Argument);
+                solved = solved ?? try1.SolveFor(symbol);
                 break;
             }
             default: {
@@ -183,7 +211,7 @@ public class Assignment {
 
     public double? Value {
         get {
-            if (this.Rhs is Constant value) {
+            if (this.Rhs is Real value) {
                 return value.Value;
             } else {
                 return null;

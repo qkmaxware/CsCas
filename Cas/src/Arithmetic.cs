@@ -24,14 +24,14 @@ public class Addition : BaseExpression {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(constLhs.Value + constRhs.Value);
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(constLhs.Value + constRhs.Value);
         } 
         // If one of them is zero, omit it
-        if (newLHS is Constant zeroLhs && zeroLhs.Value == 0) {
+        if (newLHS is Real zeroLhs && zeroLhs.Value == 0) {
             return newRHS;
         }
-        else if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
+        else if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
             return newLHS;
         }
         // No simplification
@@ -77,11 +77,11 @@ public class Subtraction: BaseExpression {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(constLhs.Value - constRhs.Value);
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(constLhs.Value - constRhs.Value);
         } 
         // If rhs is zero, omit it
-        if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
+        if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
             return newLHS;
         }
         // No simplification
@@ -127,15 +127,15 @@ public class Multiplication : BaseExpression {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(constLhs.Value * constRhs.Value);
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(constLhs.Value * constRhs.Value);
         } 
         // If one of them are zero the product is zero
-        if (newLHS is Constant zeroLhs && zeroLhs.Value == 0) {
-            return Constant.Zero;
+        if (newLHS is Real zeroLhs && zeroLhs.Value == 0) {
+            return Real.Zero;
         }
-        else if (newRHS is Constant zeroRhs && zeroRhs.Value == 0) {
-            return Constant.Zero;
+        else if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
+            return Real.Zero;
         }
         // No simplification
         else {
@@ -180,8 +180,8 @@ public class Division : BaseExpression {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(constLhs.Value / constRhs.Value);
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(constLhs.Value / constRhs.Value);
         } 
         // Cancellation of similar terms
         else if (newLHS is Multiplication top1 && newRHS is Multiplication bottom1 && top1.Lhs == bottom1.Lhs) {
@@ -238,8 +238,8 @@ public class Exponentiation : BaseExpression {
         var newLHS = Root.Simplify();
         var newRHS = Power.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(Math.Pow(constLhs.Value, constRhs.Value));
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(Math.Pow(constLhs.Value, constRhs.Value));
         } 
         // No simplification
         else {
@@ -283,8 +283,8 @@ public class Logarithm : BaseExpression  {
         var newLHS = Base.Simplify();
         var newRHS = Argument.Simplify();
         // If both are constants
-        if (newLHS is Constant constLhs && newRHS is Constant constRhs) {
-            return new Constant(Math.Log(constRhs.Value, constLhs.Value));
+        if (newLHS is Real constLhs && newRHS is Real constRhs) {
+            return new Real(Math.Log(constRhs.Value, constLhs.Value));
         } 
         // No simplification
         else {

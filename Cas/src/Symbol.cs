@@ -37,11 +37,11 @@ public class Symbol : BaseExpression {
         return Identifier;
     }
 
-    public static SymbolicSubstitution operator == (Symbol symbol, Constant constant) {
+    public static SymbolicSubstitution operator == (Symbol symbol, Real constant) {
         return new SymbolicSubstitution(symbol, constant);
     }
 
-    public static SymbolicSubstitution operator != (Symbol symbol, Constant constant) {
+    public static SymbolicSubstitution operator != (Symbol symbol, Real constant) {
         throw new NotImplementedException();
     }
 }

@@ -66,7 +66,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
                     f
                 )
             ),
-            rhs: new Division(
+            rhs: new Multiplication(
                 g,
                 g
             )
@@ -81,7 +81,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         return new Multiplication(
             new Exponentiation(
                 g,
-                new Subtraction(f, Constant.One)
+                new Subtraction(f, Real.One)
             ),
             new Addition(
                 new Multiplication(
@@ -90,7 +90,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
                         this.VisitExpressionNode(f)
                     ),
                     new Logarithm(
-                        Constant.E,
+                        Real.E,
                         g
                     )
                 ),
@@ -107,24 +107,38 @@ public class DifferentiationVisitor : ExpressionVisitor {
         var x = logarithm.Argument;
         var a = logarithm.Base;
         return new Division(
-            lhs: Constant.One,
+            lhs: Real.One,
             rhs: new Multiplication(
                 x,
-                new Logarithm(Constant.E, a)
+                new Logarithm(Real.E, a)
             )
         );
     }
 
+    public override BaseExpression VisitFunction(Function func) {
+        if (!(func is IDifferentiable)) {
+            throw new System.ArgumentException($"Derivative not known for function '{func.GetType().Name}'");
+        }
+        // f(g(x)) = f`(g(x))*g`(x)
+        var f = func;
+        var g = func.Argument;
+
+        var df_g = ((IDifferentiable)func).GetDerivativeExpressionWithArg(g);
+        var dg = this.VisitExpressionNode(g);
+
+        return new Multiplication(df_g, dg);
+    }
+
     public override BaseExpression VisitSymbol(Symbol symbol) {
         if (symbol == this.derivativeSymbol) {
-            return Constant.One;
+            return Real.One;
         } else {
             return new DerivativeSymbol(symbol); 
         }
     }
 
-    public override BaseExpression VisitContant(Constant constant) {
-        return Constant.Zero;
+    public override BaseExpression VisitContant(Real constant) {
+        return Real.Zero;
     }
 }
 

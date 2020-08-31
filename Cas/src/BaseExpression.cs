@@ -21,11 +21,11 @@ public abstract class BaseExpression : IAlgebraicEntity {
     }
 
     public static Exponentiation operator ^ (double a, BaseExpression b) {
-        return new Exponentiation(new Constant(a), b);
+        return new Exponentiation(new Real(a), b);
     }
 
     public static Exponentiation operator ^ (BaseExpression a, double b) {
-        return new Exponentiation(a, new Constant(b));
+        return new Exponentiation(a, new Real(b));
     }
 
     public static Addition operator + (BaseExpression a, BaseExpression b) {
@@ -33,11 +33,11 @@ public abstract class BaseExpression : IAlgebraicEntity {
     }
 
     public static Addition operator + (double a, BaseExpression b) {
-        return new Addition(new Constant(a), b);
+        return new Addition(new Real(a), b);
     }
 
     public static Addition operator + (BaseExpression a, double b) {
-        return new Addition(a, new Constant(b));
+        return new Addition(a, new Real(b));
     }
 
     public static Subtraction operator - (BaseExpression a, BaseExpression b) {
@@ -45,11 +45,11 @@ public abstract class BaseExpression : IAlgebraicEntity {
     }
 
     public static Subtraction operator - (double a, BaseExpression b) {
-        return new Subtraction(new Constant(a), b);
+        return new Subtraction(new Real(a), b);
     }
 
     public static Subtraction operator - (BaseExpression a, double b) {
-        return new Subtraction(a, new Constant(b));
+        return new Subtraction(a, new Real(b));
     }
 
     public static Multiplication operator * (BaseExpression a, BaseExpression b) {
@@ -57,11 +57,11 @@ public abstract class BaseExpression : IAlgebraicEntity {
     }
 
     public static Multiplication operator * (double a, BaseExpression b) {
-        return new Multiplication(new Constant(a), b);
+        return new Multiplication(new Real(a), b);
     }
 
     public static Multiplication operator * (BaseExpression a, double b) {
-        return new Multiplication(a, new Constant(b));
+        return new Multiplication(a, new Real(b));
     }
 
     public static Division operator / (BaseExpression a, BaseExpression b) {
@@ -69,35 +69,35 @@ public abstract class BaseExpression : IAlgebraicEntity {
     }
 
     public static Division operator / (double a, BaseExpression b) {
-        return new Division(new Constant(a), b);
+        return new Division(new Real(a), b);
     }
 
     public static Division operator / (BaseExpression a, double b) {
-        return new Division(a, new Constant(b));
+        return new Division(a, new Real(b));
     }
 
     public static Subtraction operator - (BaseExpression a) {
-        return new Subtraction(Constant.Zero, a);
+        return new Subtraction(Real.Zero, a);
     }
 
     public static Assignment operator <= (BaseExpression a, BaseExpression b) {
         return new Assignment(a, b);
     }
     public static Assignment operator <= (double a, BaseExpression b) {
-        return new Assignment(new Constant(a), b);
+        return new Assignment(new Real(a), b);
     }
     public static Assignment operator <= (BaseExpression a, double b) {
-        return new Assignment(a, new Constant(b));
+        return new Assignment(a, new Real(b));
     }
 
     public static Assignment operator >= (BaseExpression a, BaseExpression b) {
         return new Assignment(b, a);
     }
     public static Assignment operator >= (double a, BaseExpression b) {
-        return new Assignment(b, new Constant(a));
+        return new Assignment(b, new Real(a));
     }
     public static Assignment operator >= (BaseExpression a, double b) {
-        return new Assignment(new Constant(b), a);
+        return new Assignment(new Real(b), a);
     }
 
 }

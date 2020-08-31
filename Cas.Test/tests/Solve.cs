@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Qkmaxware.Cas;
+using Qkmaxware.Cas;
 
 namespace Cas.Test {
 
@@ -29,6 +30,17 @@ public class Solve {
 
         var equation = y <= x + 3;
         var answer = x <= y - 3;
+
+        Assert.AreEqual(answer, equation.SolveFor(x));
+    }
+
+    [TestMethod]
+    public void TestCustomFunctions() {
+        var x = new Symbol("x");
+        var y = new Symbol("y");
+
+        var equation = y <= Trig.Sin(x);
+        var answer = x <= Trig.Asin(y);
 
         Assert.AreEqual(answer, equation.SolveFor(x));
     }

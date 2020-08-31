@@ -63,20 +63,27 @@ public class Derivative {
         Assert.AreEqual(ddx, expr.Differentiate(x).Simplify());
     }
 
-
+    [TestMethod]
     public void TestQuotientRule() {
         Symbol z = new Symbol("z");
         Symbol y = new Symbol("y");
         Symbol x = new Symbol("x");
 
         var expr = y <= x / z;
-        var ddx = new DerivativeSymbol(y) <= (new DerivativeSymbol(x) * z - new DerivativeSymbol(z) * x) / (z * z);
+        var ddx = new DerivativeSymbol(y) <= (1 * z - new DerivativeSymbol(z) * x) / (z * z);
 
         Assert.AreEqual(ddx, expr.Differentiate(x).Simplify());
     }
 
+    [TestMethod]
     public void TestChainRule() {
-        
+        Symbol y = new Symbol("y");
+        Symbol x = new Symbol("x");
+
+        var expr = y <= Trig.Sin(x);
+        var dx = new DerivativeSymbol(y) <= Trig.Cos(x) * 1;
+
+        Assert.AreEqual(dx, expr.Differentiate(x).Simplify());
     }
 
 }
