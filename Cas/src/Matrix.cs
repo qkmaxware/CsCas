@@ -34,6 +34,21 @@ public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, ID
         }
     }
 
+    public static implicit operator Matrix (BaseExpression[,] elements) => new Matrix(elements);
+    public static implicit operator Matrix (int[,] elements) => new Matrix(Transform<int, BaseExpression>(elements, (e) => new Real(e)));
+    public static implicit operator Matrix (float[,] elements) => new Matrix(Transform<float, BaseExpression>(elements, (e) => new Real(e)));
+    public static implicit operator Matrix (double[,] elements) => new Matrix(Transform<double, BaseExpression>(elements, (e) => new Real(e)));
+
+    private static T2[,] Transform<T1, T2>(T1[,] original, Func<T1, T2> mapping) {
+        T2[,] rs = new T2[original.GetLength(0), original.GetLength(1)];
+        for (var row = 0; row < original.GetLength(0); row++) {
+            for (var col = 0; col < original.GetLength(1); col++) {
+                rs[row, col] = mapping(original[row, col]);
+            }
+        }
+        return rs;
+    }
+
     public override bool IsConstant() {
         foreach (var element in this.elements) {
             if (!element.IsConstant())
