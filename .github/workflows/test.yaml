@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix: 
         os: [ windows-latest, ubuntu-latest, macOS-latest ]
-        dotnet: [ '6.0.x' ]
+        dotnet: [ '7.0.x' ]
     steps:
     - name: Checkout Code - ${{ github.sha }}@${{ github.ref }}
       uses: actions/checkout@master
