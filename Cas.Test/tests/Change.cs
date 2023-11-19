@@ -12,8 +12,8 @@ public class Change {
         var expression = x * x;
         var result = expression.When(x == 2).Simplify();
 
-        Assert.IsInstanceOfType(result, typeof(Real));
-        Assert.AreEqual(4, ((Real)result).Value);
+        Assert.IsInstanceOfType(result, typeof(Complex));
+        Assert.AreEqual(4, ((Complex)result).Real);
     }
 }
 

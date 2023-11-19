@@ -3,11 +3,11 @@ using System.Reflection;
 
 namespace Qkmaxware.Cas {
 
-public class Assignment {
-    public BaseExpression Lhs {get; private set;}
-    public BaseExpression Rhs {get; private set;}
+public class Assignment: IEquation {
+    public IExpression Lhs {get; private set;}
+    public IExpression Rhs {get; private set;}
 
-    public Assignment(BaseExpression lhs, BaseExpression rhs) {
+    public Assignment(IExpression lhs, IExpression rhs) {
         this.Lhs = lhs;
         this.Rhs = rhs;
     }
@@ -20,7 +20,7 @@ public class Assignment {
         return new Assignment(this.Lhs.Simplify(), this.Rhs.Simplify());
     }
 
-    private Function GetInverse(Function fn, BaseExpression arg) {
+    private Function GetInverse(Function fn, IExpression arg) {
         if (!(fn is IInvertable)) {
             throw new System.ArgumentException($"No known inverse for function '{fn.GetType().Name}'");
         }

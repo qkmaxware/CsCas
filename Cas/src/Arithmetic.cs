@@ -5,33 +5,33 @@ namespace Qkmaxware.Cas {
 
 public class Addition : BaseExpression {
 
-    public BaseExpression Lhs {get; private set;}
-    public BaseExpression Rhs {get; private set;}
+    public IExpression Lhs {get; private set;}
+    public IExpression Rhs {get; private set;}
 
-    public Addition(BaseExpression lhs, BaseExpression rhs) {
+    public Addition(IExpression lhs, IExpression rhs) {
         this.Lhs = lhs;
         this.Rhs = rhs;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Addition(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Real constLhs && newRHS is Real constRhs) {
-            return new Real(constLhs.Value + constRhs.Value);
+        if (newLHS is IAdd constLhs && newRHS is IValueLike constRhs && constLhs.CanAdd(constRhs)) {
+            return constLhs.Add(constRhs);
         } 
         // If one of them is zero, omit it
-        if (newLHS is Real zeroLhs && zeroLhs.Value == 0) {
+        if (newLHS is IValueLike zeroLhs && zeroLhs.IsZero()) {
             return newRHS;
         }
-        else if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
+        else if (newRHS is IValueLike zeroRhs && zeroRhs.IsZero()) {
             return newLHS;
         }
         // No simplification
@@ -39,6 +39,8 @@ public class Addition : BaseExpression {
             return new Addition(newLHS, newRHS);
         }
     }
+
+    public override bool IsConstant() => this.Lhs.IsConstant() && this.Rhs.IsConstant();
 
     public override bool Equals(object obj) {
         return obj switch {
@@ -58,30 +60,30 @@ public class Addition : BaseExpression {
 
 public class Subtraction: BaseExpression {
 
-    public BaseExpression Lhs {get; private set;}
-    public BaseExpression Rhs {get; private set;}
+    public IExpression Lhs {get; private set;}
+    public IExpression Rhs {get; private set;}
 
-    public Subtraction(BaseExpression lhs, BaseExpression rhs) {
+    public Subtraction(IExpression lhs, IExpression rhs) {
         this.Lhs = lhs;
         this.Rhs = rhs;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Subtraction(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Real constLhs && newRHS is Real constRhs) {
-            return new Real(constLhs.Value - constRhs.Value);
+        if (newLHS is ISubtract constLhs && newRHS is IValueLike constRhs && constLhs.CanSubtract(constRhs)) {
+            return constLhs.Subtract(constRhs);
         } 
         // If rhs is zero, omit it
-        if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
+        if (newRHS is IValueLike zeroRhs && zeroRhs.IsZero()) {
             return newLHS;
         }
         // No simplification
@@ -89,6 +91,8 @@ public class Subtraction: BaseExpression {
             return new Subtraction(newLHS, newRHS);
         }
     }
+
+    public override bool IsConstant() => this.Lhs.IsConstant() && this.Rhs.IsConstant();
 
     public override bool Equals(object obj) {
         return obj switch {
@@ -108,33 +112,35 @@ public class Subtraction: BaseExpression {
 
 public class Multiplication : BaseExpression {
 
-    public BaseExpression Lhs {get; private set;}
-    public BaseExpression Rhs {get; private set;}
+    public IExpression Lhs {get; private set;}
+    public IExpression Rhs {get; private set;}
 
-    public Multiplication(BaseExpression lhs, BaseExpression rhs) {
+    public Multiplication(IExpression lhs, IExpression rhs) {
         this.Lhs = lhs;
         this.Rhs = rhs;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Multiplication(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override bool IsConstant() => this.Lhs.IsConstant() && this.Rhs.IsConstant();
+
+    public override IExpression Simplify() {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
-        // If both are constants
-        if (newLHS is Real constLhs && newRHS is Real constRhs) {
-            return new Real(constLhs.Value * constRhs.Value);
+        // If both are constants 
+        if (newLHS is IMultiply constLhs && newRHS is IValueLike constRhs && constLhs.CanMultiply(constRhs)) {
+            return constLhs.Multiply(constRhs);
         } 
         // If one of them are zero the product is zero
-        if (newLHS is Real zeroLhs && zeroLhs.Value == 0) {
+        if (newLHS is IValueLike zeroLhs && zeroLhs.IsZero()) {
             return Real.Zero;
         }
-        else if (newRHS is Real zeroRhs && zeroRhs.Value == 0) {
+        else if (newRHS is IValueLike zeroRhs && zeroRhs.IsZero()) {
             return Real.Zero;
         }
         // No simplification
@@ -161,27 +167,27 @@ public class Multiplication : BaseExpression {
 
 public class Division : BaseExpression {
 
-    public BaseExpression Lhs {get; private set;}
-    public BaseExpression Rhs {get; private set;}
+    public IExpression Lhs {get; private set;}
+    public IExpression Rhs {get; private set;}
 
-    public Division(BaseExpression lhs, BaseExpression rhs) {
+    public Division(IExpression lhs, IExpression rhs) {
         this.Lhs = lhs;
         this.Rhs = rhs;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Division(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newLHS = Lhs.Simplify();
         var newRHS = Rhs.Simplify();
         // If both are constants
-        if (newLHS is Real constLhs && newRHS is Real constRhs) {
-            return new Real(constLhs.Value / constRhs.Value);
+        if (newLHS is IDivide constLhs && newRHS is IValueLike constRhs && constLhs.CanDivide(constRhs)) {
+            return constLhs.Divide(constRhs);
         } 
         // Cancellation of similar terms
         else if (newLHS is Multiplication top1 && newRHS is Multiplication bottom1 && top1.Lhs == bottom1.Lhs) {
@@ -202,6 +208,8 @@ public class Division : BaseExpression {
         }
     }
 
+    public override bool IsConstant() => this.Lhs.IsConstant() && this.Rhs.IsConstant();
+
     public override bool Equals(object obj) {
         return obj switch {
             Division bop => (this.Lhs.Equals(bop.Lhs) && this.Rhs.Equals(bop.Rhs)),
@@ -219,22 +227,22 @@ public class Division : BaseExpression {
 }
 
 public class Exponentiation : BaseExpression {
-    public BaseExpression Root {get; private set;}
-    public BaseExpression Power {get; private set;}
+    public IExpression Root {get; private set;}
+    public IExpression Power {get; private set;}
 
-    public Exponentiation(BaseExpression root, BaseExpression power) {
+    public Exponentiation(IExpression root, IExpression power) {
         this.Root = root;
         this.Power = power;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Exponentiation(this.Root.When(substitutions), this.Power.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newLHS = Root.Simplify();
         var newRHS = Power.Simplify();
         // If both are constants
@@ -246,6 +254,8 @@ public class Exponentiation : BaseExpression {
             return new Exponentiation(newLHS, newRHS);
         }
     }
+
+    public override bool IsConstant() => this.Root.IsConstant() && this.Power.IsConstant();
 
     public override bool Equals(object obj) {
         return obj switch {
@@ -264,22 +274,22 @@ public class Exponentiation : BaseExpression {
 }
 
 public class Logarithm : BaseExpression  {
-    public BaseExpression Base {get; private set;}
-    public BaseExpression Argument {get; private set;}
+    public IExpression Base {get; private set;}
+    public IExpression Argument {get; private set;}
 
-    public Logarithm(BaseExpression @base, BaseExpression argument) {
+    public Logarithm(IExpression @base, IExpression argument) {
         this.Base = @base;
         this.Argument = argument;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
         return new Logarithm(this.Base.When(substitutions), this.Argument.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newLHS = Base.Simplify();
         var newRHS = Argument.Simplify();
         // If both are constants
@@ -291,6 +301,8 @@ public class Logarithm : BaseExpression  {
             return new Logarithm(newLHS, newRHS);
         }
     }
+
+    public override bool IsConstant() => this.Base.IsConstant() && this.Argument.IsConstant();
 
     public override bool Equals(object obj) {
         return obj switch {

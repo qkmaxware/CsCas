@@ -1,6 +1,6 @@
 namespace Qkmaxware.Cas {
 
-public abstract class BaseExpression : IAlgebraicEntity {
+public abstract class BaseExpression : IExpression {
 
     // +, -, *, /, ^, (<= | >=)?
 
@@ -13,8 +13,9 @@ public abstract class BaseExpression : IAlgebraicEntity {
         var expr3 = (double)expr2.When(y == 4, a == 2).Simplify();    // x <= (-12) ^ (0.5)
     */
 
-    public abstract BaseExpression When (params Substitution[] substitutions);
-    public abstract BaseExpression Simplify();
+    public abstract IExpression When (params Substitution[] substitutions);
+    public abstract IExpression Simplify();
+    public abstract bool IsConstant();
 
     public static Exponentiation operator ^ (BaseExpression a, BaseExpression b) {
         return new Exponentiation(a, b);

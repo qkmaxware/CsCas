@@ -2,17 +2,23 @@ namespace Qkmaxware.Cas {
 
 public abstract class ExpressionVisitor {
 
-    public abstract BaseExpression VisitSymbol(Symbol symbol);
-    public abstract BaseExpression VisitContant(Real constant);
-    public abstract BaseExpression VisitAddition(Addition addition);
-    public abstract BaseExpression VisitSubtraction(Subtraction subtraction);
-    public abstract BaseExpression VisitMultiplication(Multiplication multiplication);
-    public abstract BaseExpression VisitDivision(Division division);
-    public abstract BaseExpression VisitExponentiation(Exponentiation exponentiation);
-    public abstract BaseExpression VisitLogarithm(Logarithm logarithm);
-    public abstract BaseExpression VisitFunction(Function function);
+    public abstract IExpression VisitSymbol(Symbol symbol);
+    public abstract IExpression VisitConstant(Real constant);
+    public abstract IExpression VisitConstant(Complex constant);
+    public abstract IExpression VisitMatrix(Matrix constant);
+    public abstract IExpression VisitAddition(Addition addition);
+    public abstract IExpression VisitSubtraction(Subtraction subtraction);
+    public abstract IExpression VisitMultiplication(Multiplication multiplication);
+    public abstract IExpression VisitDivision(Division division);
+    public abstract IExpression VisitExponentiation(Exponentiation exponentiation);
+    public abstract IExpression VisitLogarithm(Logarithm logarithm);
+    public abstract IExpression VisitFunction(Function function);
+
+    public virtual IExpression VisitUnrecognizedExpression(IExpression expression) {
+        throw new System.ArgumentException("Invalid expression type");
+    }
     
-    public virtual BaseExpression VisitExpressionNode(BaseExpression expression) {
+    public virtual IExpression VisitExpressionNode(IExpression expression) {
         switch (expression) {
             case Addition bop: {
                 return VisitAddition(bop);
@@ -39,10 +45,16 @@ public abstract class ExpressionVisitor {
                 return VisitSymbol(sym);
             }
             case Real @const: {
-                return VisitContant(@const);
+                return VisitConstant(@const);
             } 
+            case Complex com: {
+                return VisitConstant(com);
+            }
+            case Matrix mat: {
+                return VisitMatrix(mat);
+            }
             default: {
-                throw new System.ArgumentException("Invalid expression type");
+                return VisitUnrecognizedExpression(expression);
             }
         }
     }

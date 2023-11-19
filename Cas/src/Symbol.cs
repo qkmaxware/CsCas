@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Qkmaxware.Cas {
 
-public class Symbol : BaseExpression {
+public class Symbol : BaseExpression, IValueLike {
     
     public string Identifier {get; protected set;}
 
@@ -13,12 +13,12 @@ public class Symbol : BaseExpression {
         this.Identifier = name;
     }
 
-    public override BaseExpression When (params Substitution[] substitutions) {
+    public override IExpression When (params Substitution[] substitutions) {
         var replacement = substitutions.Where((sub) => sub.IsSubstitution(this)).Select(sub => sub.Value).FirstOrDefault();
         return replacement ?? this;
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         return this;
     }
 
@@ -36,6 +36,9 @@ public class Symbol : BaseExpression {
     public override string ToString() {
         return Identifier;
     }
+
+    public override bool IsConstant() => false; // Symbols can be redefined and are therefor not const
+    public bool IsZero() => false;
 
     public static SymbolicSubstitution operator == (Symbol symbol, Real constant) {
         return new SymbolicSubstitution(symbol, constant);

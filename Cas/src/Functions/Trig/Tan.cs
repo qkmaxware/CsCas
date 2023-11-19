@@ -4,13 +4,13 @@ using Qkmaxware.Cas.Calculus;
 namespace Qkmaxware.Cas.Functions {
 
 public class Tan : Function, IInvertable, IDifferentiable {
-    public Tan(BaseExpression arg) : base(arg) {}
+    public Tan(IExpression arg) : base(arg) {}
 
-    public Function GetInverseWithArg(BaseExpression arg) {
+    public Function GetInverseWithArg(IExpression arg) {
         return new Atan(arg);
     }
 
-    public BaseExpression GetDerivativeExpressionWithArg(BaseExpression arg) {
+    public IExpression GetDerivativeExpressionWithArg(IExpression arg) {
         // sec^2(x) == 1 + tan^2(x)
         return new Addition(
             Real.One,
@@ -21,11 +21,11 @@ public class Tan : Function, IInvertable, IDifferentiable {
         );
     }
 
-    public override BaseExpression When(params Substitution[] substitutions) {
+    public override IExpression When(params Substitution[] substitutions) {
         return new Tan(this.Argument.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newArg = this.Argument.Simplify();
         // Simplifications
         // If the argument is a real number
@@ -35,6 +35,8 @@ public class Tan : Function, IInvertable, IDifferentiable {
             return new Tan(newArg);
         }
     } 
+
+    public override bool IsConstant() => this.Argument.IsConstant();
     
 }
 

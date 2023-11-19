@@ -7,8 +7,8 @@ expr.Differentiate().WithRespectTo(y);
 expr.Differentiate(y);
 */
 
-public static class DifferentiationExtentions {
-    public static BaseExpression Differentiate(this BaseExpression expr, Symbol dx) {
+public static class DifferentiationExtensions {
+    public static IExpression Differentiate(this IExpression expr, Symbol dx) {
         return new DifferentiationVisitor(dx).VisitExpressionNode(expr);
     }
 
@@ -25,17 +25,17 @@ public class DifferentiationVisitor : ExpressionVisitor {
         this.derivativeSymbol = withRespectTo;
     }
 
-    public override BaseExpression VisitAddition(Addition addition) {
+    public override IExpression VisitAddition(Addition addition) {
         // f + g -> f` + g`
         return new Addition(this.VisitExpressionNode(addition.Lhs), this.VisitExpressionNode(addition.Rhs));
     }
 
-    public override BaseExpression VisitSubtraction(Subtraction subtraction) {
+    public override IExpression VisitSubtraction(Subtraction subtraction) {
         // f - g -> f` - g`
         return new Subtraction(this.VisitExpressionNode(subtraction.Lhs), this.VisitExpressionNode(subtraction.Rhs));
     }
 
-    public override BaseExpression VisitMultiplication(Multiplication multiplication) {
+    public override IExpression VisitMultiplication(Multiplication multiplication) {
         // f*g -> f*g` + f`*g
         var f = multiplication.Lhs;
         var g = multiplication.Rhs;
@@ -51,7 +51,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         );
     }
 
-    public override BaseExpression VisitDivision(Division division) {
+    public override IExpression VisitDivision(Division division) {
         // f/g -> (f` * g − g` * f)/g2
         var f = division.Lhs;
         var g = division.Rhs;
@@ -73,7 +73,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         );
     }
 
-    public override BaseExpression VisitExponentiation(Exponentiation exponentiation) {
+    public override IExpression VisitExponentiation(Exponentiation exponentiation) {
         // (g(x)^f(x)) = g(x)^(f(x) - 1) * (g(x) * f'(x) * log(g(x)) + f(x) * g'(x))
         var g = exponentiation.Root;
         var f = exponentiation.Power;
@@ -102,7 +102,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         );
     }
 
-    public override BaseExpression VisitLogarithm(Logarithm logarithm) {
+    public override IExpression VisitLogarithm(Logarithm logarithm) {
         // log_a(x) -> 1 / (x ln(a))
         var x = logarithm.Argument;
         var a = logarithm.Base;
@@ -115,9 +115,10 @@ public class DifferentiationVisitor : ExpressionVisitor {
         );
     }
 
-    public override BaseExpression VisitFunction(Function func) {
+    public override IExpression VisitFunction(Function func) {
         if (!(func is IDifferentiable)) {
-            throw new System.ArgumentException($"Derivative not known for function '{func.GetType().Name}'");
+            // Can't figure out the derivative... just mark it as a placeholder
+            return new DerivativeExpression(derivativeSymbol, func);
         }
         // f(g(x)) = f`(g(x))*g`(x)
         var f = func;
@@ -129,7 +130,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         return new Multiplication(df_g, dg);
     }
 
-    public override BaseExpression VisitSymbol(Symbol symbol) {
+    public override IExpression VisitSymbol(Symbol symbol) {
         if (symbol == this.derivativeSymbol) {
             return Real.One;
         } else {
@@ -137,8 +138,26 @@ public class DifferentiationVisitor : ExpressionVisitor {
         }
     }
 
-    public override BaseExpression VisitContant(Real constant) {
+    public override IExpression VisitConstant(Real constant) {
         return Real.Zero;
+    }
+
+    public override IExpression VisitConstant(Complex constant) {
+        return Real.Zero;
+    }
+
+    public override IExpression VisitMatrix(Matrix maybeConstant) {
+        if (maybeConstant.IsConstant()) {
+            return Real.Zero;
+        }
+        return new DerivativeExpression(derivativeSymbol, maybeConstant);
+    }
+
+    public override IExpression VisitUnrecognizedExpression(IExpression expression) {
+        if (expression.IsConstant()) {
+            return Real.Zero;
+        }
+        return new DerivativeExpression(derivativeSymbol, expression);
     }
 }
 

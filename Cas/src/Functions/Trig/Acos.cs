@@ -4,13 +4,13 @@ using Qkmaxware.Cas.Calculus;
 namespace Qkmaxware.Cas.Functions {
 
 public class Acos : Function, IInvertable, IDifferentiable {
-    public Acos(BaseExpression arg) : base(arg) {}
+    public Acos(IExpression arg) : base(arg) {}
 
-    public Function GetInverseWithArg(BaseExpression arg) {
+    public Function GetInverseWithArg(IExpression arg) {
         return new Cos(arg);
     }
 
-    public BaseExpression GetDerivativeExpressionWithArg(BaseExpression arg) {
+    public IExpression GetDerivativeExpressionWithArg(IExpression arg) {
         // -1 / sqrt(1 - x^2)
         return new Division(
             Real.NegativeOne,
@@ -21,11 +21,11 @@ public class Acos : Function, IInvertable, IDifferentiable {
         );
     }
 
-    public override BaseExpression When(params Substitution[] substitutions) {
+    public override IExpression When(params Substitution[] substitutions) {
         return new Cos(this.Argument.When(substitutions));
     }
 
-    public override BaseExpression Simplify() {
+    public override IExpression Simplify() {
         var newArg = this.Argument.Simplify();
         // Simplifications
         // If the argument is a real number
@@ -35,6 +35,8 @@ public class Acos : Function, IInvertable, IDifferentiable {
             return new Acos(newArg);
         }
     } 
+
+    public override bool IsConstant() => this.Argument.IsConstant();
     
 }
 

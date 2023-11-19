@@ -1,9 +1,9 @@
 namespace Qkmaxware.Cas {
     
-public abstract class Function : BaseExpression{ 
-    public BaseExpression Argument {get; private set;}
+public abstract class Function : BaseExpression { 
+    public IExpression Argument {get; private set;}
 
-    public Function(BaseExpression argument) {
+    public Function(IExpression argument) {
         this.Argument = argument;
     }
 

@@ -7,7 +7,7 @@ public abstract class Substitution {
     public Substitution(BaseExpression value) {
         this.Value = value;
     }
-    public abstract bool IsSubstitution(IAlgebraicEntity entity);
+    public abstract bool IsSubstitution(BaseExpression entity);
 }
 
 public class SymbolicSubstitution : Substitution {
@@ -17,7 +17,7 @@ public class SymbolicSubstitution : Substitution {
         this.Symbol = symbol;
     }
 
-    public override bool IsSubstitution(IAlgebraicEntity entity) {
+    public override bool IsSubstitution(BaseExpression entity) {
         return entity switch  {
             Symbol sym => this.Symbol.Equals(sym),
             _ => false

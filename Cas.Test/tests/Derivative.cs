@@ -86,6 +86,31 @@ public class Derivative {
         Assert.AreEqual(dx, expr.Differentiate(x).Simplify());
     }
 
+    private class Undifferentiable : Function {
+        public Undifferentiable(BaseExpression argument) : base(argument) {}
+
+        public override IExpression Simplify() {
+            return this;
+        }
+        public override bool IsConstant() => false;
+
+        public override IExpression When(params Substitution[] substitutions) {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    [TestMethod]
+    public void TestUnableToDifferentiateRule() {
+        Symbol y = new Symbol("y");
+        Symbol x = new Symbol("x"); 
+
+        var fx = new Undifferentiable(x);
+        var expr = y <= fx;
+        var dx = new DerivativeSymbol(y) <= new DerivativeExpression(x, fx);
+
+        Assert.AreEqual(dx, expr.Differentiate(x).Simplify());
+    }
+
 }
 
 }

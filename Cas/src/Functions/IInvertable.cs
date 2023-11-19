@@ -4,7 +4,7 @@ using Qkmaxware.Cas.Calculus;
 namespace Qkmaxware.Cas {
 
 public interface IInvertable  {
-    Function GetInverseWithArg(BaseExpression arg);
+    Function GetInverseWithArg(IExpression arg);
 }
 
 }
