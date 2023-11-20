@@ -18,6 +18,14 @@ public class Atan : Function, IInvertable, IDifferentiable {
         );
     }
 
+    public IExpression GetDerivative() {
+        // 1 / (1 + x^2)
+        return new Division(
+            Real.One,
+            new Addition(Real.One, new Multiplication(this.Argument, this.Argument))
+        );
+    }
+
     public override IExpression When(params Substitution[] substitutions) {
         return new Atan(this.Argument.When(substitutions));
     }

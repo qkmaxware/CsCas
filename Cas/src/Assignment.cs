@@ -80,8 +80,8 @@ public class Assignment: IEquation {
                     bop.lhs = this.rhs * bop.rhs
                     bop.rhs = bop.lhs / this.rhs
                 */
-                var try1 = new Assignment(bop.Lhs, new Multiplication(this.Rhs, bop.Rhs));
-                var try2 = new Assignment(bop.Rhs, new Division(bop.Lhs, this.Rhs));
+                var try1 = new Assignment(bop.Numerator, new Multiplication(this.Rhs, bop.Denominator));
+                var try2 = new Assignment(bop.Denominator, new Division(bop.Numerator, this.Rhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
                 break;
             }
@@ -163,8 +163,8 @@ public class Assignment: IEquation {
                     bop.lhs = this.lhs * bop.rhs
                     bop.rhs = bop.lhs / this.lhs
                 */
-                var try1 = new Assignment(bop.Lhs, new Multiplication(this.Lhs, bop.Rhs));
-                var try2 = new Assignment(bop.Rhs, new Division(bop.Lhs, this.Lhs));
+                var try1 = new Assignment(bop.Numerator, new Multiplication(this.Lhs, bop.Denominator));
+                var try2 = new Assignment(bop.Denominator, new Division(bop.Numerator, this.Lhs));
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
                 break;
             }

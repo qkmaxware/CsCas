@@ -3,7 +3,7 @@ using Qkmaxware.Cas.Calculus;
 
 namespace Qkmaxware.Cas.Functions {
 
-public class Tan : Function, IInvertable, IDifferentiable {
+public class Tan : Function, IInvertable, IDifferentiable, IIntegrable {
     public Tan(IExpression arg) : base(arg) {}
 
     public Function GetInverseWithArg(IExpression arg) {
@@ -17,6 +17,26 @@ public class Tan : Function, IInvertable, IDifferentiable {
             new Multiplication(
                 new Tan(arg),
                 new Tan(arg)
+            )
+        );
+    }
+
+    public IExpression GetDerivative() {
+        // sec^2(x) == 1 + tan^2(x)
+        return new Addition(
+            Real.One,
+            new Multiplication(
+                new Tan(this.Argument),
+                new Tan(this.Argument)
+            )
+        );
+    }
+
+    public IExpression GetIntegral() {
+        return new Multiplication(
+            Real.NegativeOne,
+            Log.Ln(
+                new Cos(this.Argument)
             )
         );
     }

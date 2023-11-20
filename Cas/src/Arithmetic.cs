@@ -167,24 +167,24 @@ public class Multiplication : BaseExpression {
 
 public class Division : BaseExpression {
 
-    public IExpression Lhs {get; private set;}
-    public IExpression Rhs {get; private set;}
+    public IExpression Numerator {get; private set;}
+    public IExpression Denominator {get; private set;}
 
     public Division(IExpression lhs, IExpression rhs) {
-        this.Lhs = lhs;
-        this.Rhs = rhs;
+        this.Numerator = lhs;
+        this.Denominator = rhs;
     }
 
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
             return sub.Value;
-        return new Division(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
+        return new Division(this.Numerator.When(substitutions), this.Denominator.When(substitutions));
     }
 
     public override IExpression Simplify() {
-        var newLHS = Lhs.Simplify();
-        var newRHS = Rhs.Simplify();
+        var newLHS = Numerator.Simplify();
+        var newRHS = Denominator.Simplify();
         // If both are constants
         if (newLHS is IDivide constLhs && newRHS is IValueLike constRhs && constLhs.CanDivide(constRhs)) {
             return constLhs.Divide(constRhs);
@@ -208,21 +208,21 @@ public class Division : BaseExpression {
         }
     }
 
-    public override bool IsConstant() => this.Lhs.IsConstant() && this.Rhs.IsConstant();
+    public override bool IsConstant() => this.Numerator.IsConstant() && this.Denominator.IsConstant();
 
     public override bool Equals(object obj) {
         return obj switch {
-            Division bop => (this.Lhs.Equals(bop.Lhs) && this.Rhs.Equals(bop.Rhs)),
+            Division bop => (this.Numerator.Equals(bop.Numerator) && this.Denominator.Equals(bop.Denominator)),
             _ => base.Equals(obj)
         };
     }
     
     public override int GetHashCode(){
-        return System.HashCode.Combine(this.Lhs, this.Rhs);
+        return System.HashCode.Combine(this.Numerator, this.Denominator);
     }
 
     public override string ToString() {
-        return $"({Lhs} / {Rhs})";
+        return $"({Numerator} / {Denominator})";
     }
 }
 

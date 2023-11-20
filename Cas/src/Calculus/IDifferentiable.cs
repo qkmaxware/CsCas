@@ -2,8 +2,11 @@ using System;
 
 namespace Qkmaxware.Cas.Calculus {
 
+/// <summary>
+/// Interface for functions that have known derivatives
+/// </summary>
 public interface IDifferentiable {
-    IExpression GetDerivativeExpressionWithArg(IExpression arg);
+    public IExpression GetDerivative();
 }
 
 }

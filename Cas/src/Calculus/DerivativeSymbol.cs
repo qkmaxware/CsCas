@@ -1,5 +1,8 @@
 namespace Qkmaxware.Cas {
 
+/// <summary>
+/// Symbol for a variable that has been taken the derivative of
+/// </summary>
 public class DerivativeSymbol : Symbol {
     private Symbol baseSymbol;
 

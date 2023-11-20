@@ -3,7 +3,7 @@ using Qkmaxware.Cas.Calculus;
 
 namespace Qkmaxware.Cas.Functions {
 
-public class Sin : Function, IInvertable, IDifferentiable {
+public class Sin : Function, IInvertable, IDifferentiable, IIntegrable {
     public Sin(IExpression arg) : base(arg) {}
 
     public Function GetInverseWithArg(IExpression arg) {
@@ -12,6 +12,14 @@ public class Sin : Function, IInvertable, IDifferentiable {
 
     public IExpression GetDerivativeExpressionWithArg(IExpression arg) {
         return new Cos(arg);
+    }
+
+    public IExpression GetDerivative() {
+        return new Cos(this.Argument);
+    }
+
+    public IExpression GetIntegral() {
+        return new Multiplication(Real.NegativeOne, new Cos(this.Argument));
     }
 
     public override IExpression When(params Substitution[] substitutions) {

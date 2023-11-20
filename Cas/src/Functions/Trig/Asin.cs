@@ -21,6 +21,17 @@ public class Asin : Function, IInvertable, IDifferentiable {
         );
     }
 
+    public IExpression GetDerivative() {
+        // 1 / sqrt(1 - x^2)
+        return new Division(
+            Real.One,
+            new Exponentiation(
+                new Subtraction(Real.One, new Multiplication(this.Argument, this.Argument)),
+                Real.Sqrt
+            )
+        );
+    }
+
     public override IExpression When(params Substitution[] substitutions) {
         return new Asin(this.Argument.When(substitutions));
     }

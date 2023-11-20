@@ -7,16 +7,33 @@ expr.Differentiate().WithRespectTo(y);
 expr.Differentiate(y);
 */
 
+/// <summary>
+/// Extensions for performing derivatives
+/// </summary>
 public static class DifferentiationExtensions {
+    /// <summary>
+    /// Compute the derivative
+    /// </summary>
+    /// <param name="expr">expression to compute derivative of</param>
+    /// <param name="dx">variable to compute derivative with respect to</param>
+    /// <returns>derivative</returns>
     public static IExpression Differentiate(this IExpression expr, Symbol dx) {
         return new DifferentiationVisitor(dx).VisitExpressionNode(expr);
     }
-
+    /// <summary>
+    /// Compute the derivative of both sides of an assignment
+    /// </summary>
+    /// <param name="expr">expression to compute derivative of</param>
+    /// <param name="dx">variable to compute derivative with respect to</param>
+    /// <returns>derivative</returns>
     public static Assignment Differentiate(this Assignment assignment, Symbol dx) {
         return new DifferentiationVisitor(dx).VisitAssignment(assignment);
     }
 }
 
+/// <summary>
+/// Derivative expression transformer
+/// </summary>
 public class DifferentiationVisitor : ExpressionVisitor {
 
     private Symbol derivativeSymbol;
@@ -53,8 +70,8 @@ public class DifferentiationVisitor : ExpressionVisitor {
 
     public override IExpression VisitDivision(Division division) {
         // f/g -> (f` * g − g` * f)/g2
-        var f = division.Lhs;
-        var g = division.Rhs;
+        var f = division.Numerator;
+        var g = division.Denominator;
         return new Division(
             lhs: new Subtraction(
                 lhs: new Multiplication(
@@ -124,7 +141,7 @@ public class DifferentiationVisitor : ExpressionVisitor {
         var f = func;
         var g = func.Argument;
 
-        var df_g = ((IDifferentiable)func).GetDerivativeExpressionWithArg(g);
+        var df_g = ((IDifferentiable)func).GetDerivative();
         var dg = this.VisitExpressionNode(g);
 
         return new Multiplication(df_g, dg);
