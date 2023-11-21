@@ -14,7 +14,7 @@ public class Symbol : BaseExpression, IValueLike {
     }
 
     public override IExpression When (params Substitution[] substitutions) {
-        var replacement = substitutions.Where((sub) => sub.IsSubstitution(this)).Select(sub => sub.Value).FirstOrDefault();
+        var replacement = substitutions.Where((sub) => sub.IsSubstitution(this)).Select(sub => sub.GetReplacement()).FirstOrDefault();
         return replacement ?? this;
     }
 

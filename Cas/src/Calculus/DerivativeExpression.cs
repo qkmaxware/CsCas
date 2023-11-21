@@ -5,7 +5,9 @@ namespace Qkmaxware.Cas {
 /// </summary>
 public class DerivativeExpression : BaseExpression {
     private Symbol wrt;
+    public Symbol WithRespectTo => wrt;
     private IExpression expr;
+    public IExpression ExpressionToDerivate => expr;
 
     public DerivativeExpression(Symbol wrt, IExpression expr) {
         this.wrt = wrt;

@@ -21,7 +21,8 @@ public static class IntegrationExtensions {
     /// <param name="dx">variable to integrate with respect to</param>
     /// <returns>integral</returns>
     public static IExpression Integrate(this IExpression expr, Symbol dx) {
-        return new IntegrationMatcher(dx).Integrate(expr);
+        var e2 = new IntegrationMatcher(dx).Integrate(expr);
+        return new Addition(e2, new ConstantOfIntegration());
     }
     /// <summary>
     /// Compute the definite integral
@@ -31,7 +32,7 @@ public static class IntegrationExtensions {
     /// <param name="bounds">upper and lower bounds of the integration variable</param>
     /// <returns>integral</returns>
     public static IExpression Integrate(this IExpression expr, Symbol dx, Range bounds) {
-        var indefinite = expr.Integrate(dx);
+        var indefinite = new IntegrationMatcher(dx).Integrate(expr);
         return new Subtraction(
             indefinite.When(new SymbolicSubstitution(dx, bounds.End.Value)),
             indefinite.When(new SymbolicSubstitution(dx, bounds.Start.Value))
@@ -51,15 +52,15 @@ public class IntegrationMatcher {
     }
 
     public IExpression Integrate(IExpression expr) {
-        var C = new ConstantOfIntegration();
         return expr switch {
             #region Common functions
-            Complex complex => (complex * wrt) + C,                                         // Constant
-            Symbol symbol when symbol != wrt => (symbol * wrt) + C,                         // Constant by not being ME
-            Symbol symbol when symbol == wrt => new Exponentiation(expr,new Real(2))/2 + C, // Variable
-            Division { Numerator: Real { Real: 1, Imaginary: 0 }, Denominator: Symbol symbol} when symbol == wrt => Log.Ln(symbol) + C, // Reciprocal
-            Exponentiation { Root: Real a, Power: Symbol symbol } when symbol == wrt => new Division(expr, Log.Ln(a)) + C, // Exponential
-            IIntegrable integrable => new Addition(integrable.GetIntegral(), C),            // Known function
+            Complex complex => (complex * wrt),                                         // Constant
+            Symbol symbol when symbol != wrt => (symbol * wrt) ,                         // Constant by not being ME
+            Symbol symbol when symbol == wrt => new Exponentiation(expr,new Real(2))/2, // Variable
+            Division { Numerator: Real { Real: 1, Imaginary: 0 }, Denominator: Symbol symbol} when symbol == wrt => Log.Ln(symbol), // Reciprocal
+            Exponentiation { Root: Real a, Power: Symbol symbol } when symbol == wrt => new Division(expr, Log.Ln(a)), // Exponential
+            IIntegrable integrable => integrable.GetIntegral(),            // Known function
+            DerivativeExpression derivative when derivative.WithRespectTo == this.wrt => derivative.ExpressionToDerivate, 
             #endregion
 
             #region Common rules

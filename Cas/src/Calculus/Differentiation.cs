@@ -171,6 +171,9 @@ public class DifferentiationVisitor : ExpressionVisitor {
     }
 
     public override IExpression VisitUnrecognizedExpression(IExpression expression) {
+        if (expression is IntegralExpression integral && integral.WithRespectTo == this.derivativeSymbol) {
+            return integral.ExpressionToIntegrate;
+        }
         if (expression.IsConstant()) {
             return Real.Zero;
         }

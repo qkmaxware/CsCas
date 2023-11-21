@@ -16,7 +16,7 @@ public class Addition : BaseExpression {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Addition(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
@@ -71,7 +71,7 @@ public class Subtraction: BaseExpression {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Subtraction(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
@@ -123,7 +123,7 @@ public class Multiplication : BaseExpression {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Multiplication(this.Lhs.When(substitutions), this.Rhs.When(substitutions));
     }
 
@@ -178,7 +178,7 @@ public class Division : BaseExpression {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Division(this.Numerator.When(substitutions), this.Denominator.When(substitutions));
     }
 
@@ -238,7 +238,7 @@ public class Exponentiation : BaseExpression {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Exponentiation(this.Root.When(substitutions), this.Power.When(substitutions));
     }
 
@@ -285,7 +285,7 @@ public class Logarithm : BaseExpression  {
     public override IExpression When (params Substitution[] substitutions) {
         var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
         if (sub != null)
-            return sub.Value;
+            return sub.GetReplacement();
         return new Logarithm(this.Base.When(substitutions), this.Argument.When(substitutions));
     }
 

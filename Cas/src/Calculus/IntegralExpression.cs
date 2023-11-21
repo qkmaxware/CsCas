@@ -5,7 +5,9 @@ namespace Qkmaxware.Cas {
 /// </summary>
 public class IntegralExpression : BaseExpression {
     private Symbol wrt;
+    public Symbol WithRespectTo => wrt;
     private IExpression expr;
+    public IExpression ExpressionToIntegrate => expr;
 
     public IntegralExpression(Symbol wrt, IExpression expr) {
         this.wrt = wrt;

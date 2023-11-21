@@ -3,26 +3,27 @@ using System;
 namespace Qkmaxware.Cas {
 
 public abstract class Substitution {
-    public BaseExpression Value {get; private set;}
-    public Substitution(BaseExpression value) {
-        this.Value = value;
-    }
-    public abstract bool IsSubstitution(BaseExpression entity);
+    public abstract bool IsSubstitution(IExpression entity);
+    public abstract IExpression GetReplacement();
 }
 
 public class SymbolicSubstitution : Substitution {
     public Symbol Symbol {get; private set;}
+    public IExpression Replacement {get; private set;}
 
-    public SymbolicSubstitution(Symbol symbol, Real @for) : base(@for) {
+    public SymbolicSubstitution(Symbol symbol, Real @for) : base() {
         this.Symbol = symbol;
+        this.Replacement = @for;
     }
 
-    public override bool IsSubstitution(BaseExpression entity) {
+    public override bool IsSubstitution(IExpression entity) {
         return entity switch  {
             Symbol sym => this.Symbol.Equals(sym),
             _ => false
         };
     }
+
+    public override IExpression GetReplacement() => Replacement;
 }
 
 }
