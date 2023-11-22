@@ -10,7 +10,7 @@ public static class Pow {
     /// </summary>
     /// <param name="expression">argument expression tree</param>
     /// <returns>Expression tree for square root</returns>
-    public static Exponentiation Sqrt(BaseExpression expression) {
+    public static Exponentiation Sqrt(IExpression expression) {
         return new Exponentiation(expression, Real.Sqrt);
     }
 

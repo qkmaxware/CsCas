@@ -246,8 +246,8 @@ public class Exponentiation : BaseExpression {
         var newLHS = Root.Simplify();
         var newRHS = Power.Simplify();
         // If both are constants
-        if (newLHS is Real constLhs && newRHS is Real constRhs) {
-            return new Real(Math.Pow(constLhs.Value, constRhs.Value));
+        if (newLHS is Complex constLhs && newRHS is Complex constRhs) {
+            return constLhs.Pow(constRhs);
         } 
         // No simplification
         else {

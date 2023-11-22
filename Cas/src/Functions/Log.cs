@@ -9,7 +9,7 @@ public static class Log {
     /// </summary>
     /// <param name="expression">argument expression tree</param>
     /// <returns>Expression tree  for logarithm</returns>
-    public static Logarithm Ln(BaseExpression expression) {
+    public static Logarithm Ln(IExpression expression) {
         return new Logarithm(Real.E, expression);
     }
 
@@ -18,7 +18,7 @@ public static class Log {
     /// </summary>
     /// <param name="expression">argument expression tree</param>
     /// <returns>Expression tree for logarithm</returns>
-    public static Logarithm Log2(BaseExpression expression) {
+    public static Logarithm Log2(IExpression expression) {
         return new Logarithm(new Real(2), expression);
     }
 
@@ -27,7 +27,7 @@ public static class Log {
     /// </summary>
     /// <param name="expression">argument expression tree</param>
     /// <returns>Expression tree for logarithm</returns>
-    public static Logarithm Log10(BaseExpression expression) {
+    public static Logarithm Log10(IExpression expression) {
         return new Logarithm(new Real(10), expression);
     }
 
