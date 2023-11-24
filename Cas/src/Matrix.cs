@@ -8,8 +8,8 @@ public class DimensionMismatchException : ArithmeticException {
 
 public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, IDivide {
     private IExpression[] elements;
-    private int Rows;
-    private int Columns;
+    public int Rows {get; private set;}
+    public int Columns {get; private set;}
     public bool IsSquare() => Rows == Columns;
 
     public IExpression this[int row, int col] {
