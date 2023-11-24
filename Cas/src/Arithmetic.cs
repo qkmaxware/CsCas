@@ -273,6 +273,53 @@ public class Exponentiation : BaseExpression {
     }
 }
 
+public class NthRoot : BaseExpression {
+    public IExpression Degree {get; private set;}
+    public IExpression Radicand {get; private set;}
+
+    public NthRoot(IExpression degree, IExpression radicand) {
+        this.Degree = degree;
+        this.Radicand = radicand;
+    }
+
+    public override IExpression When (params Substitution[] substitutions) {
+        var sub = substitutions.Where(sub => sub.IsSubstitution(this)).FirstOrDefault();
+        if (sub != null)
+            return sub.GetReplacement();
+        return new Exponentiation(this.Degree.When(substitutions), this.Radicand.When(substitutions));
+    }
+
+    public override IExpression Simplify() {
+        var newLHS = Degree.Simplify();
+        var newRHS = Radicand.Simplify();
+        // If both are constants
+        if (newLHS is Complex constLhs && newRHS is Complex constRhs) {
+            return constRhs.Pow(Real.One.Divide(constLhs));
+        } 
+        // No simplification
+        else {
+            return new NthRoot(newLHS, newRHS);
+        }
+    }
+
+    public override bool IsConstant() => this.Degree.IsConstant() && this.Radicand.IsConstant();
+
+    public override bool Equals(object obj) {
+        return obj switch {
+            NthRoot bop => (this.Degree.Equals(bop.Degree) && this.Radicand.Equals(bop.Radicand)),
+            _ => base.Equals(obj)
+        };
+    }
+    
+    public override int GetHashCode(){
+        return System.HashCode.Combine(this.Degree, this.Radicand);
+    }
+
+    public override string ToString() {
+        return $"({Radicand} ^ 1/{Degree})";
+    }
+}
+
 public class Logarithm : BaseExpression  {
     public IExpression Base {get; private set;}
     public IExpression Argument {get; private set;}

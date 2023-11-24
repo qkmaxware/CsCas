@@ -96,6 +96,14 @@ public class Assignment: IEquation {
                 solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
                 break;
             }
+            case NthRoot root: {
+                // Same as bop ^ except root becomes Radicand, and Power becomes 1/Degree
+                var pow = new Division(Real.One, root.Degree);
+                var try1 = new Assignment(root.Radicand, new Exponentiation(this.Rhs, new Division(Real.One, pow)));
+                var try2 = new Assignment(pow, new Logarithm(root.Radicand, this.Rhs));
+                solved = solved ?? try1.SolveFor(symbol) ?? try2.SolveFor(symbol);
+                break;
+            }
             case Logarithm log : {
                 /*
                     log_{bop.base}(bop.arg) = this.rhs

@@ -119,6 +119,10 @@ public class DifferentiationVisitor : ExpressionVisitor {
         );
     }
 
+    public override IExpression VisitRoot(NthRoot root) {
+        return VisitExponentiation(new Exponentiation(root.Radicand, new Division(Real.One, root.Degree)));
+    }
+
     public override IExpression VisitLogarithm(Logarithm logarithm) {
         // log_a(x) -> 1 / (x ln(a))
         var x = logarithm.Argument;

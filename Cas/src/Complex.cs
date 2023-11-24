@@ -170,6 +170,10 @@ public class Complex : BaseExpression, IValueLike, INumber {
         
         return new Complex(scalar * real, scalar * img);
     }
+
+    public static implicit operator Complex(double d) {
+        return new Complex(d);
+    }
 }
 
 }

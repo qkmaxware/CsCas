@@ -14,10 +14,7 @@ public class Acos : Function, IInvertable, IDifferentiable {
         // -1 / sqrt(1 - x^2)
         return new Division(
             Real.NegativeOne,
-            new Exponentiation(
-                new Subtraction(Real.One, new Multiplication(arg, arg)),
-                Real.Sqrt
-            )
+            Root.Square(new Subtraction(Real.One, new Multiplication(arg, arg)))
         );
     }
 
@@ -25,10 +22,7 @@ public class Acos : Function, IInvertable, IDifferentiable {
         // -1 / sqrt(1 - x^2)
         return new Division(
             Real.NegativeOne,
-            new Exponentiation(
-                new Subtraction(Real.One, new Multiplication(this.Argument, this.Argument)),
-                Real.Sqrt
-            )
+            Root.Square(new Subtraction(Real.One, new Multiplication(this.Argument, this.Argument)))
         );
     }
 

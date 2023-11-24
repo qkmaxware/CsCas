@@ -11,6 +11,7 @@ public abstract class ExpressionVisitor {
     public abstract IExpression VisitMultiplication(Multiplication multiplication);
     public abstract IExpression VisitDivision(Division division);
     public abstract IExpression VisitExponentiation(Exponentiation exponentiation);
+    public abstract IExpression VisitRoot (NthRoot root);
     public abstract IExpression VisitLogarithm(Logarithm logarithm);
     public abstract IExpression VisitFunction(Function function);
 
@@ -34,6 +35,9 @@ public abstract class ExpressionVisitor {
             }
             case Exponentiation bop : {
                 return VisitExponentiation(bop);
+            }
+            case NthRoot root: {
+                return VisitRoot(root);
             }
             case Logarithm bop : {  
                 return VisitLogarithm(bop);
