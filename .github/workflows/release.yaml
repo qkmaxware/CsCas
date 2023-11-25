@@ -32,7 +32,7 @@ jobs:
         # Work around https://github.com/actions/setup-dotnet/issues/29
         DOTNET_ROOT: ${{ runner.tool_cache }}/dncs/${{ matrix.dotnet }}/x64
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: dotnet nuget push bin\*.nupkg --source "https://nuget.pkg.github.com/qkmaxware/index.json" --skip-duplicate --api-key ${GITHUB_TOKEN}
+      run: dotnet nuget push bin\*.nupkg --source "https://nuget.pkg.github.com/qkmaxware/index.json" --skip-duplicate --api-key $Env:GITHUB_TOKEN 
       
   build:
     name: Test
