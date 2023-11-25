@@ -13,8 +13,8 @@ public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, ID
     public bool IsSquare() => Rows == Columns;
 
     public IExpression this[int row, int col] {
-        get => this.elements[col + row * this.Rows];
-        set => this.elements[col + row * this.Rows] = value;
+        get => this.elements[col + row * this.Columns];
+        set => this.elements[col + row * this.Columns] = value;
     }
 
     public Matrix(int rows, int columns) {
@@ -61,14 +61,14 @@ public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, ID
     public override IExpression When(params Substitution[] substitutions) {
         var next = new Matrix(this.Rows, this.Columns);
         for(var i = 0; i < next.elements.Length; i++)
-            next.elements[i] = next.elements[i].When(substitutions);
+            next.elements[i] = this.elements[i].When(substitutions);
         return next;
     }
 
     public override IExpression Simplify() {
         var next = new Matrix(this.Rows, this.Columns);
         for(var i = 0; i < next.elements.Length; i++)
-            next.elements[i] = next.elements[i].Simplify();
+            next.elements[i] = this.elements[i].Simplify();
         return next;
     }
 
@@ -148,8 +148,8 @@ public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, ID
         
         return value switch {
             Complex complex => this.ScalarMultiply(complex),
-            Matrix mtx => this.Subtract(mtx),
-            _ => throw new ArgumentException("Cannot subtract a value of type " + value.GetType())
+            Matrix mtx => this.Multiply(mtx),
+            _ => throw new ArgumentException("Cannot multiply a value of type " + value.GetType())
         };
     }
     public Matrix Multiply(Matrix other) {
