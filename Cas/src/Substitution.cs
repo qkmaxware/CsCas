@@ -11,7 +11,7 @@ public class SymbolicSubstitution : Substitution {
     public Symbol Symbol {get; private set;}
     public IExpression Replacement {get; private set;}
 
-    public SymbolicSubstitution(Symbol symbol, Real @for) : base() {
+    public SymbolicSubstitution(Symbol symbol, IExpression @for) : base() {
         this.Symbol = symbol;
         this.Replacement = @for;
     }

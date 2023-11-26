@@ -6,7 +6,7 @@ public class DimensionMismatchException : ArithmeticException {
     public DimensionMismatchException() : base() {}
 }
 
-public class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, IDivide {
+public partial class Matrix : BaseExpression, IValueLike, IAdd, ISubtract, IMultiply, IDivide {
     private IExpression[] elements;
     public int Rows {get; private set;}
     public int Columns {get; private set;}

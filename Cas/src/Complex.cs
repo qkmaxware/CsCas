@@ -2,9 +2,12 @@ using System;
 
 namespace Qkmaxware.Cas {
 
-public class Complex : BaseExpression, IValueLike, INumber {
+public partial class Complex : BaseExpression, IValueLike, INumber {
     public double Real {get; private set;}
     public double Imaginary {get; private set;}
+
+    public double SquaredMagnitude => Real * Real + Imaginary * Imaginary;
+    public double Magnitude => Math.Sqrt(SquaredMagnitude);
 
     public bool IsPurelyReal => Imaginary == 0;
     public bool IsPurelyImaginary => Real == 0;

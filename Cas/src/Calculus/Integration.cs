@@ -29,13 +29,14 @@ public static class IntegrationExtensions {
     /// </summary>
     /// <param name="expr">expression to integrate</param>
     /// <param name="dx">variable to integrate with respect to</param>
-    /// <param name="bounds">upper and lower bounds of the integration variable</param>
+    /// <param name="from">lower bound of the integration variable</param>
+    /// <param name="to">upper bound of the integration variable</param>
     /// <returns>integral</returns>
-    public static IExpression Integrate(this IExpression expr, Symbol dx, Range bounds) {
+    public static IExpression Integrate(this IExpression expr, Symbol dx, IExpression from, IExpression to) {
         var indefinite = new IntegrationMatcher(dx).Integrate(expr);
         return new Subtraction(
-            indefinite.When(new SymbolicSubstitution(dx, bounds.End.Value)),
-            indefinite.When(new SymbolicSubstitution(dx, bounds.Start.Value))
+            indefinite.When(new SymbolicSubstitution(dx, to)),
+            indefinite.When(new SymbolicSubstitution(dx, from))
         );
     }
 
